@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextArea xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()" 
+	click="testToClear()" 
+	focusOut="checkToReset()" 
+	focusIn="testToClear()"
+	updateComplete="checkForOverwrite()"
+	>
+	<mx:Script>
+		<![CDATA[
+			
+			[Bindable] public var defaultText:String = "";
+			[Bindable] public var defaultTextColor:Number = 0x000000;
+			
+			private var _savedTextColor:Number;
+			
+			private function init():void{
+				this.text = defaultText;
+				_savedTextColor = this.getStyle("color");
+				this.setStyle("color", defaultTextColor);
+			}	
+			
+			private function testToClear():void{
+				if(this.text == defaultText){
+					this.text = "";
+					this.setStyle("color", _savedTextColor);
+				}
+			}
+			
+			private function checkToReset():void{
+				if(this.text == ""){
+					this.text = defaultText;
+					this.setStyle("color", defaultTextColor);
+				}
+			}
+			
+			private function checkForOverwrite():void{
+				if(this.text != defaultText) this.setStyle("color", _savedTextColor);
+			}
+			
+		]]>
+	</mx:Script>
+	
+</mx:TextArea>

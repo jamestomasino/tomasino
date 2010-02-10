@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FormComponent 
+	xmlns="com.tomasino.flex.forms.templates.*" 
+	xmlns:mx="http://www.adobe.com/2006/mxml" 
+	width="400" 
+	height="{input.height}"
+	>
+	
+	<mx:Script>
+		<![CDATA[
+			
+			[Bindable] private var _label:String;
+			[Bindable] public var inputLength:int = 10;
+			
+			override public function set label(value:String):void{ _label = value; }
+			
+		]]>
+	</mx:Script>
+	
+	<mx:FormItem label="{_label}" width="100%">
+		<mx:TextInput id="input" maxChars="{inputLength}" />
+	</mx:FormItem>
+	
+</FormComponent>

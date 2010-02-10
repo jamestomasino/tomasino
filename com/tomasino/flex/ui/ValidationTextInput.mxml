@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:TextInput xmlns:mx="http://www.adobe.com/2006/mxml" 
+	creationComplete="init()" 
+	click="testToClear()" 
+	focusOut="checkToReset()" 
+	focusIn="testToClear()" 
+	updateComplete="checkForOverwrite()"
+	change="onTextChange()"
+	>
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Text;
+			
+			[Bindable] public var defaultText:String = "";
+			[Bindable] public var defaultTextColor:Number = 0x000000;
+			[Bindable] public var defaultBorderColor:Number = 0xB7BABC;
+			[Bindable] public var errorText:Text;
+			[Bindable] public var errorMsg:String;
+			[Bindable] public var regex:RegExp;
+			
+			private var _savedTextColor:Number;
+			private var _savedBorderColor:Number;
+					
+			private function init():void {
+				if(defaultText) {
+					this.text = defaultText;
+				}
+				_savedTextColor = this.getStyle("color");
+				_savedBorderColor = this.getStyle("borderColor");
+				this.setStyle("color", defaultTextColor);
+				this.setStyle("borderStyle", "solid");
+				this.setStyle("borderColor", defaultBorderColor);
+			}
+			
+			private function testToClear():void {
+				if(this.text == defaultText){
+					this.text = "";
+					this.setStyle("color", _savedTextColor);
+				}
+			}
+			
+			private function checkToReset():void {
+				if(this.text == ""){
+					this.text = defaultText;
+					this.setStyle("color", defaultTextColor);
+				}
+			}
+			
+			private function checkForOverwrite():void {
+				if(this.text != defaultText) {
+					this.setStyle("color", _savedTextColor);
+				}
+			}
+			
+			private function onTextChange():void {
+				this.setStyle("borderColor", defaultBorderColor);
+				if(errorText) {
+					errorText.text = "";
+				}
+			}
+			
+			public function invalidateInput():void {
+				this.text = "";
+				checkToReset();
+				this.setStyle("borderColor", _savedBorderColor);
+				if(errorText) {
+					errorText.text = errorMsg;
+				}
+			}
+			
+			public function validateInput():Boolean {
+				if(regex) {
+					var match:Array = this.text.match(new RegExp(regex));
+					//if(match) { //taken out for lazy regex's
+					if(match && match[0] == this.text) {
+						this.text = match[0];
+					} else {
+						this.text = "";
+						checkToReset();
+					}
+				}
+				if(this.text == defaultText) {
+					this.setStyle("borderColor", _savedBorderColor);
+					if(errorText) {
+						errorText.text = errorMsg;
+					}
+					return false;
+				}
+				return true;
+			}
+			
+			public function clear():void {
+				this.text = "";
+				checkToReset();
+				this.setStyle("borderColor", defaultBorderColor);
+				if(errorText) {
+					errorText.text = "";
+				}
+			}
+		]]>
+	</mx:Script>
+</mx:TextInput>
