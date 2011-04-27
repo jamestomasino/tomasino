@@ -23,12 +23,14 @@ package org.tomasino.utils
 				var t:String = '';
 				if (headersEnabled)
 				{
-					/* Hack!!! */
+					
+					/* Hack: Since AS3 has no arugments.caller method, we have to use the stack trace from a dummy error */
 					var error:Error = new Error();
 					var caller:String = error.getStackTrace().split('\n')[2];
 					var className:String;
 					var callerArr:Array;
 					
+					/* the Flash IDE has a different Error syntax than the plugin */
 					if (flashIDEErrorStyle)
 					{
 						callerArr = caller.split(' ').pop().split('/')
