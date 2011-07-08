@@ -224,11 +224,13 @@
 		
 		/* FMS Calls */
 		
-		public function onBWCheck(...args):Number {
-        	return 0;
-    	}
+		public function onBWCheck(...args):Number 
+		{
+        		return 0;
+    		}
 		
-		public function onBWDone (...args):void{
+		public function onBWDone (...args):void
+		{
 			if (args.length > 0)
 			{
 				var bandwidth:Number = args[0];
@@ -237,7 +239,8 @@
 			if (!isNaN(Number(bandwidth))) connectStream ();
 		}
 		
-		public function close ():void{
+		public function close ():void
+		{
 			_log.info ('close - Remote Called');
 		}
 		
@@ -245,7 +248,8 @@
 		{
 			_log.info ('onFCSubscribe - Remote Called');
 			// We should now be subscribed to the stream.
-			switch (info['code']) {
+			switch (info['code']) 
+			{
 				case "NetStream.Play.Start":
 				// Now create your NetStream object here and do all of the other code to attach it to a Video object, etc.
 				break;
