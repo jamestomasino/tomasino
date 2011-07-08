@@ -1,1 +1,54 @@
-﻿package org.tomasino.tracking.omniture{	public class OmnitureProduct	{		/*		 * [Category] - This represents the Product Category.  It is not recommended that you use this parameter		 * due to the fact that it ties the Product to the first Category that it is associated with and it cannot		 * be changed.  There are now better ways to assign Products to Product Categories so this parameter is		 * normally not set and remains primarily for historical purposes.		 *		 * [Product] - This represents the name or ID of the Product.  If you pass an ID, you can always use		 * Classifications to upload friendly names and roll products into Categories.  If you will be passing a		 * lot of Products at one time, it is recommended that you use ID's instead of full product names to limit		 * the length of the overall product string so you do not exceed browser character limits.		 *		 * [Quantity] - When used with the Purchase Success Event, this represents the quantity of the Product		 * being purchased (i.e. visitor is buying two memory cards)		 *		 * [Total Price] - When used with the Purchase Success Event, this represents the total price for the		 * Product being purchased (i.e. two memory cards total $200 for both)		 *		 * [Incrementor] - You can set an Incrementor Success Event such that you manually pass a currency amount		 * or number to it. For example, you charge $2.50 shipping for a product and want to show that separate from		 * Revenue, you can devote a Success Event to 'Shipping Costs' and pass "2.5" in this part of the Product		 * String to add $2.50 with each purchase.		 *		 * [Merchandising] - You can use this parameter to bind Products to different eVar values for each Product		 * instead of tying all Products to one eVar value.  This is often used to capture which product category		 * the visitor used to find the Product.		 */				public var category:String;		public var product:String;		public var quantity:String;		public var totalPrice:String;		public var incrementor:String;		public var merchandising:String;				public function OmnitureProduct (_category:String = '', _product:String = '', _quantity:String = '', _totalPrice:String = '', _incrementor:String = '', _merchandising:String = '')		{			category = _category;			product = _product;			quantity = _quantity;			totalPrice = _totalPrice;			incrementor = _incrementor;			merchandising = _merchandising;		}				public function toString ():String		{			return category + ';' + product + ';' + ((quantity) ? quantity : '') + ';' + ((totalPrice) ? totalPrice : '') + ';' + ((incrementor) ? incrementor : '') + ';' + merchandising;		}	}}
+﻿package org.tomasino.tracking.omniture
+{
+	public class OmnitureProduct
+	{
+		/*
+		 * [Category] - This represents the Product Category.  It is not recommended that you use this parameter
+		 * due to the fact that it ties the Product to the first Category that it is associated with and it cannot
+		 * be changed.  There are now better ways to assign Products to Product Categories so this parameter is
+		 * normally not set and remains primarily for historical purposes.
+		 *
+		 * [Product] - This represents the name or ID of the Product.  If you pass an ID, you can always use
+		 * Classifications to upload friendly names and roll products into Categories.  If you will be passing a
+		 * lot of Products at one time, it is recommended that you use ID's instead of full product names to limit
+		 * the length of the overall product string so you do not exceed browser character limits.
+		 *
+		 * [Quantity] - When used with the Purchase Success Event, this represents the quantity of the Product
+		 * being purchased (i.e. visitor is buying two memory cards)
+		 *
+		 * [Total Price] - When used with the Purchase Success Event, this represents the total price for the
+		 * Product being purchased (i.e. two memory cards total $200 for both)
+		 *
+		 * [Incrementor] - You can set an Incrementor Success Event such that you manually pass a currency amount
+		 * or number to it. For example, you charge $2.50 shipping for a product and want to show that separate from
+		 * Revenue, you can devote a Success Event to 'Shipping Costs' and pass "2.5" in this part of the Product
+		 * String to add $2.50 with each purchase.
+		 *
+		 * [Merchandising] - You can use this parameter to bind Products to different eVar values for each Product
+		 * instead of tying all Products to one eVar value.  This is often used to capture which product category
+		 * the visitor used to find the Product.
+		 */
+		
+		public var category:String;
+		public var product:String;
+		public var quantity:String;
+		public var totalPrice:String;
+		public var incrementor:String;
+		public var merchandising:String;
+		
+		public function OmnitureProduct (_category:String = '', _product:String = '', _quantity:String = '', _totalPrice:String = '', _incrementor:String = '', _merchandising:String = '')
+		{
+			category = _category;
+			product = _product;
+			quantity = _quantity;
+			totalPrice = _totalPrice;
+			incrementor = _incrementor;
+			merchandising = _merchandising;
+		}
+		
+		public function toString ():String
+		{
+			return category + ';' + product + ';' + ((quantity) ? quantity : '') + ';' + ((totalPrice) ? totalPrice : '') + ';' + ((incrementor) ? incrementor : '') + ';' + merchandising;
+		}
+	}
+}
