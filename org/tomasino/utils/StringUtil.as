@@ -1,4 +1,4 @@
-﻿package org.tomasino.utils
+﻿package org.tomasino.utils 
 {
 	public class StringUtil
 	{
