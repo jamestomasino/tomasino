@@ -29,7 +29,7 @@
 		
 		public function addMatchCode ( key:Array ):void
 		{
-			matchHash.add( key );
+			matchHash.add( key.concat() );
 		}
 		
 		public function removeMatchCode ( key:Array ):void
