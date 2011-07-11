@@ -2,16 +2,11 @@ h2. An ActionScript 3 Library that contains a number of classes and utilities fo
 
 Tomasino AS3 Library Includes:
 
-* Automated Dependency Injection
-* Loosely coupled inter-object messaging using native Flash Events
-* Simple command execution and automation
-* Automated view component mediation
-
-"Labs Website":http://labs.tomasino.org
+* Coming Soon
 
 h3. Getting Started
 
-* "Brief Overview":http://labs.tomasino.org
+* "Labs Website":http://labs.tomasino.org
 
 h3. Lab Samples
 
