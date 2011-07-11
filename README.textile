@@ -10,18 +10,18 @@ h3. Getting Started
 
 h3. Lab Samples
 
-* "org.tomasino.net.SimpleNetStream":http://labs.tomasino.org/2011/07/08/netstream-sucks/
-* "org.tomasino.utils.Debug":http://labs.tomasino.org/2011/04/27/trace-replacer/
-* "org.tomasino.io.KeyCodeReader":http://labs.tomasino.org/2011/03/01/as3-keycode-reader/
-* "org.tomasino.display.DepthOfField":http://labs.tomasino.org/2011/02/23/depth-of-field/
-* "org.tomasino.utils.ObscureText":http://labs.tomasino.org/2011/02/23/obscure-text/ 
-* "org.tomasino.tracking.omniture.*":http://labs.tomasino.org/2011/02/01/flash-omniture-tracking/
-* "org.tomasino.tracking.google.*":http://labs.tomasino.org/2011/01/31/flash-googleanalytics-tracking/
-* "org.tomasino.display.DuplicateLoader":http://labs.tomasino.org/2010/04/20/as3-duplicate-loaded-swf/
-* "org.tomasino.net.SynchronousLoader":http://labs.tomasino.org/2010/04/01/as3-synchronous-url-xml-loading/
-* "org.tomasino.logging.*":http://labs.tomasino.org/2009/12/04/flash-as3-debug-logging/
-* "org.tomasino.accessibility.TabManager":http://labs.tomasino.org/2009/12/03/flash-as3-focus-management/
-* "org.tomasino.fonts.FontManager":http://labs.tomasino.org/2009/07/16/flash-as3-runtime-font-manager/
+* "org.tomasino.net.SimpleNetStream":http://labs.tomasino.org/2011/07/08/netstream-sucks/ - NetStream wrapper with correct event firing and no callbacks
+* "org.tomasino.utils.Debug":http://labs.tomasino.org/2011/04/27/trace-replacer/ - Simple debugging with line numbers
+* "org.tomasino.io.KeyCodeReader":http://labs.tomasino.org/2011/03/01/as3-keycode-reader/ - Simple keyboard keycode input system
+* "org.tomasino.display.DepthOfField":http://labs.tomasino.org/2011/02/23/depth-of-field/ - Depth of field changer. High CPU use
+* "org.tomasino.utils.ObscureText":http://labs.tomasino.org/2011/02/23/obscure-text/ - Replace text with visually similar unicode garbage for obfuscation to machines and easy human readability
+* "org.tomasino.tracking.omniture.*":http://labs.tomasino.org/2011/02/01/flash-omniture-tracking/ - Omniture Tracking
+* "org.tomasino.tracking.google.*":http://labs.tomasino.org/2011/01/31/flash-googleanalytics-tracking/ - Google Analytics Tracking
+* "org.tomasino.display.DuplicateLoader":http://labs.tomasino.org/2010/04/20/as3-duplicate-loaded-swf/ - Duplicate Loaded SWFs
+* "org.tomasino.net.SynchronousLoader":http://labs.tomasino.org/2010/04/01/as3-synchronous-url-xml-loading/ - URLLoader that works synchronously
+* "org.tomasino.logging.*":http://labs.tomasino.org/2009/12/04/flash-as3-debug-logging/ - Full featured Debugging
+* "org.tomasino.accessibility.TabManager":http://labs.tomasino.org/2009/12/03/flash-as3-focus-management/ - Simple Tab Manager with groups
+* "org.tomasino.fonts.FontManager":http://labs.tomasino.org/2009/07/16/flash-as3-runtime-font-manager/ - Runtime Font Loading
 
 
 
