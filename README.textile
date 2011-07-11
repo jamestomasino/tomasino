@@ -27,7 +27,11 @@ h3. Lab Samples
 
 h3. Dependencies
 
-* Coming Soon
+* "as3corelib":https://github.com/mikechambers/as3corelib - Required for: JSONLoader, LatLongDist
+* "GreenSock Tween Suite":http://www.greensock.com/tweenlite/ - Required for: DepthOfField, ParallaxManager, ScrollWheelWindow, SparkleBox
+* Flex - WebServiceProxy
+* Omniture Actionsource SWC - org.tomasino.tracking.omniture.*
+
 
 h2. License
 
