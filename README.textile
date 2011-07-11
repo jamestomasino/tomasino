@@ -1,8 +1,4 @@
-h2. An ActionScript 3 Library that contains a number of classes and utilities for working with ActionScript 3.
-
-Tomasino AS3 Library Includes:
-
-* Coming Soon
+h2. tomasino - An ActionScript 3 Library that contains a number of classes and utilities for working with ActionScript 3.
 
 h3. Getting Started
 
