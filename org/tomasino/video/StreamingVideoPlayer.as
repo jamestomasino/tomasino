@@ -282,7 +282,8 @@
 			switch (info['code']) 
 			{
 				case "NetStream.Play.Start":
-				// Now create your NetStream object here and do all of the other code to attach it to a Video object, etc.
+				// If FMS is telling the stream to connect, go ahead and do so now.
+				connectStream();
 				break;
 			}
 		}
