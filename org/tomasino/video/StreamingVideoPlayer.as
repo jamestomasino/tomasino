@@ -16,6 +16,8 @@
 	import flash.media.SoundTransform;
 	import flash.media.Video;
 	import flash.net.NetConnection;
+	import flash.utils.clearInterval;
+	import flash.utils.setInterval;
 	
 	
 	public class StreamingVideoPlayer extends Sprite
@@ -41,6 +43,13 @@
 		private var _isMuted:Boolean = false;
 		private var _isDestroying:Boolean = false;
 		
+		// For Seeking
+		private var _isSeeking:Boolean = false;
+		private var _lastSeekableTime:Number;
+		private var _lastSeekTime:Number;
+		private var _seekID:Number = -1;
+		
+		
 		private var _log:Logger = new Logger (this);
 		
 		public function StreamingVideoPlayer (serverLoc:String, flvLocation:String, maxWidth:Number, maxHeight:Number, autosize:Boolean = false, volume:Number = 1):void
@@ -62,6 +71,18 @@
 			//add eventListeners to NetConnection and connect
 			_netConnection.addEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
 			_netConnection.addEventListener (SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			
+			// Dispatch Clones for NetConnection
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CALL_BAD_VERSION, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CALL_FAILED, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CALL_PROHIBITED, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_SUCCESS, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_FAILED, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_CLOSED, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_REJECTED, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_APP_SHUTDOWN, onClonableEvent );
+			_netConnection.addEventListener ( NetConstants.NETCONNECTION_CONNECT_INVALID_APP, onClonableEvent );
+			
 			_netConnection.client = this;
 			_netConnection.connect (serverLoc);
 		}
@@ -74,6 +95,7 @@
 		public function set repeat (val:Boolean):void { _repeat = val; }
 		public function set smoothing (val:Boolean):void { if (_video) _video.smoothing = val; }
 		public function get smoothing ():Boolean { return (_video) ? _video.smoothing : true; }
+		public function get isSeeking ():Boolean { return _isSeeking; }
 		public function get mute ():Boolean { return _isMuted }
 		public function set mute (val:Boolean):void 
 		{
@@ -111,6 +133,39 @@
 			_ns.addEventListener (MetaDataEvent.META_DATA, onMetaData);
 			_ns.addEventListener (PlayStatusEvent.COMPLETE, onPlayComplete);
 			
+			// Dispatch Clones for NetStream
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_SWITCH, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_COMPLETE, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_TRANSITION_COMPLETE, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_BUFFER_EMPTY, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_BUFFER_FULL, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_BUFFER_FLUSH, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_FAILED, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PUBLISH_START, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PUBLISH_BADNAME, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PUBLISH_IDLE, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_UNPUBLISH_SUCCESS, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_START, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_STOP, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_FAILED, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_STREAM_NOT_FOUND, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_RESET, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_PUBLISH_NOTIFY, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_UNPUBLISH_NOTIFY, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_INSUFFICIENT_BW, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_FILE_STRUCTURE_INVALID, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_NO_SUPPORTED_TRACK_FOUND, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_PAUSE_NOTIFY, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_UNPAUSE_NOTIFY, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_RECORD_START, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_RECORD_NO_ACCESS, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_RECORD_STOP, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_RECORD_FAILED, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_SEEK_FAILED, onClonableEvent );
+			_ns.addEventListener ( NetConstants.NETSTREAM_SEEK_INVALID_TIME, onClonableEvent );
+			
+			//_ns.addEventListener ( NetConstants.NETSTREAM_SEEK_NOTIFY, onClonableEvent ); // Don's use this one. Replace it with one that works
+			
 			volume = _volume; 
 			
 			//attach netstream to the video object
@@ -122,6 +177,11 @@
 			dispatchEvent(new Event(Event.INIT));
 			_ns.play (_videoURL);
 			if (!_serverLoc) this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		}
+		
+		private function onClonableEvent ( e:Event ):void
+		{
+			dispatchEvent ( e.clone() );
 		}
 		
 		private function videoPlayComplete ():void
@@ -147,7 +207,9 @@
 				_isPaused = false;
 				_ns.togglePause ();
 				return true;
-			} else {
+			} 
+			else 
+			{
 				return false;
 			}
 		}
@@ -158,7 +220,9 @@
 				_isPaused = true;
 				_ns.togglePause ();
 				return true;
-			} else {
+			} 
+			else 
+			{
 				return false;
 			}
 		}
@@ -169,9 +233,39 @@
 			return true;
 		}
 		
-		public function seek (pos:Number):void
+		public function seek (time:Number):void
 		{
-			_ns.seek(pos);
+			if ( time != _lastSeekTime )
+			{
+				if ( time > _lastSeekableTime )
+				{
+					time = _lastSeekableTime;
+				}
+				_lastSeekTime = time;
+				_isSeeking = true;
+				
+				// Cleanup
+				if ( _seekID != -1 )
+				{
+					clearInterval ( _seekID );
+					_seekID = -1;
+				}
+			}
+			
+			_seekID = setInterval( checkForTimeUpdate, 1, time );
+			_ns.seek( time );
+		}
+		
+		private function checkForTimeUpdate ( snapshot:Number ):void
+		{
+			if ( _ns.time != snapshot )
+			{
+				clearInterval( _seekID );
+				_seekID = -1;
+				_isSeeking = false;
+				_lastSeekTime = -1;
+				dispatchEvent( new Event (NetConstants.NETSTREAM_SEEK_NOTIFY) ); // Only dispatch this after we have a valid new time
+			}
 		}
 		
 		public function addASCuePoint ( time:Number, label:String ):void
@@ -194,6 +288,21 @@
 				case NetConstants.NETSTREAM_PLAY_STOP:
 					videoPlayComplete ();
 					break;
+				case NetConstants.NETSTREAM_SEEK_FAILED:
+					_log.warn ('onNetStatus - Seek Failed: ' + _ns.time);
+					clearInterval ( _seekID );
+					_isSeeking = false;
+					break;
+				case NetConstants.NETSTREAM_SEEK_INVALID_TIME:
+					_log.warn ('onNetStatus - Seek Invalid Time: ' + _ns.time);
+					clearInterval ( _seekID );
+					_isSeeking = false;
+					var lvtime:Number = parseFloat ( event['info']['details'] );
+					seek ( lvtime );
+					break;
+				case NetConstants.NETSTREAM_SEEK_NOTIFY:
+					// This event is useless. Handled by interval hack.
+					break;
 			}
 		}
 		
@@ -206,7 +315,7 @@
 				_log.info ('onMetaData -' , s,'=>', metaData[s]);
 			}
 			
-			_vidDuration = metaData['duration'];
+			_lastSeekTime = _vidDuration = metaData['duration'];
 			_vidHeight = metaData['height'];
 			_vidWidth = metaData['width'];
 			
@@ -230,6 +339,7 @@
 				var e:Event = new Event(Event.CHANGE);
 				dispatchEvent(e);
 			}
+			
 			if (_bytesLoaded != _ns.bytesLoaded)
 			{
 				_bytesLoaded = _ns.bytesLoaded;
@@ -256,16 +366,59 @@
 		public function destroy ():void
 		{
 			_ns.pause();
-			_netConnection.removeEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
-			_netConnection.removeEventListener (SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			_ns.removeEventListener (AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			_ns.removeEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
-			_ns.removeEventListener (CuePointEvent.CUE_POINT, onCuePoint);
-			_ns.removeEventListener (MetaDataEvent.META_DATA, onMetaData);
-			_ns.removeEventListener (PlayStatusEvent.COMPLETE, onPlayComplete);
-			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-			_ns.destroy();
-			_netConnection.close();
+			
+			_netConnection.removeEventListener ( NetStatusEvent.NET_STATUS, onNetStatus );
+			_netConnection.removeEventListener ( SecurityErrorEvent.SECURITY_ERROR, onSecurityError );
+			
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CALL_BAD_VERSION, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CALL_FAILED, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CALL_PROHIBITED, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_SUCCESS, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_FAILED, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_CLOSED, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_REJECTED, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_APP_SHUTDOWN, onClonableEvent );
+			_netConnection.removeEventListener ( NetConstants.NETCONNECTION_CONNECT_INVALID_APP, onClonableEvent );
+			
+			_ns.removeEventListener ( AsyncErrorEvent.ASYNC_ERROR, onAsyncError );
+			_ns.removeEventListener ( NetStatusEvent.NET_STATUS, onNetStatus );
+			_ns.removeEventListener ( CuePointEvent.CUE_POINT, onCuePoint );
+			_ns.removeEventListener ( MetaDataEvent.META_DATA, onMetaData );
+			_ns.removeEventListener ( PlayStatusEvent.COMPLETE, onPlayComplete );
+			
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_SWITCH, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_COMPLETE, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_TRANSITION_COMPLETE, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_BUFFER_EMPTY, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_BUFFER_FULL, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_BUFFER_FLUSH, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_FAILED, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PUBLISH_START, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PUBLISH_BADNAME, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PUBLISH_IDLE, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_UNPUBLISH_SUCCESS, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_START, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_STOP, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_FAILED, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_STREAM_NOT_FOUND, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_RESET, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_PUBLISH_NOTIFY, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_UNPUBLISH_NOTIFY, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_INSUFFICIENT_BW, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_FILE_STRUCTURE_INVALID, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_NO_SUPPORTED_TRACK_FOUND, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_PAUSE_NOTIFY, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_UNPAUSE_NOTIFY, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_RECORD_START, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_RECORD_NO_ACCESS, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_RECORD_STOP, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_RECORD_FAILED, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_SEEK_FAILED, onClonableEvent );
+			_ns.removeEventListener ( NetConstants.NETSTREAM_SEEK_INVALID_TIME, onClonableEvent );
+			
+			
+			this.removeEventListener ( Event.ENTER_FRAME, onEnterFrame );
+			_netConnection.close ();
 			
 			for (var s:String in this)
 			{
