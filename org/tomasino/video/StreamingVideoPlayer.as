@@ -281,7 +281,7 @@
 			// We should now be subscribed to the stream.
 			switch (info['code']) 
 			{
-				case "NetStream.Play.Start":
+				case NetConstants.NETSTREAM_PLAY_START:
 				// If FMS is telling the stream to connect, go ahead and do so now.
 				connectStream();
 				break;
