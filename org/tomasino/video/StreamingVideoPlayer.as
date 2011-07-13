@@ -13,6 +13,7 @@
 	import flash.events.MouseEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.media.SoundTransform;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	
@@ -27,6 +28,7 @@
 		private var _vidWidth:Number;
 		private var _vidHeight:Number;
 		
+		private var _volume:Number = 1;
 		private var _netConnection:NetConnection = new NetConnection();
 		private var _ns:SimpleNetStream;
 		private var _serverLoc:String;
@@ -37,11 +39,11 @@
 		private var _time:Number;
 		private var _bytesLoaded:Number;
 		private var _isMuted:Boolean = false;
-		private var _volume:Number = 1;
+		private var _isDestroying:Boolean = false;
 		
 		private var _log:Logger = new Logger (this);
 		
-		public function StreamingVideoPlayer (serverLoc:String, flvLocation:String, maxWidth:Number, maxHeight:Number, autosize:Boolean = false):void
+		public function StreamingVideoPlayer (serverLoc:String, flvLocation:String, maxWidth:Number, maxHeight:Number, autosize:Boolean = false, volume:Number = 1):void
 		{
 			_log.info ('StreamingVideoPlayer - Server Location:', serverLoc);
 			_log.info ('StreamingVideoPlayer - FLV Location:', flvLocation);
@@ -55,6 +57,7 @@
 			_maxHeight = maxHeight;
 			_isAutosize = autosize;
 			_serverLoc = serverLoc;
+			_volume = volume;
 			
 			//add eventListeners to NetConnection and connect
 			_netConnection.addEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
@@ -250,15 +253,37 @@
 			_log.warn ('onAsyncError -', event.text);
 		}
 		
-		
+		public function destroy ():void
+		{
+			_ns.pause();
+			_netConnection.removeEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
+			_netConnection.removeEventListener (SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			_ns.removeEventListener (AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+			_ns.removeEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
+			_ns.removeEventListener (CuePointEvent.CUE_POINT, onCuePoint);
+			_ns.removeEventListener (MetaDataEvent.META_DATA, onMetaData);
+			_ns.removeEventListener (PlayStatusEvent.COMPLETE, onPlayComplete);
+			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			_ns.destroy();
+			_netConnection.close();
+			
+			for (var s:String in this)
+			{
+				try
+				{
+					this[s] = null;
+				}
+				catch (e:Error) {}
+			}
+		}
 		
 		
 		/* FMS Calls */
 		
 		public function onBWCheck(...args):Number 
 		{
-        		return 0;
-    		}
+			return 0;
+		}
 		
 		public function onBWDone (...args):void
 		{
@@ -272,19 +297,23 @@
 		
 		public function close ():void
 		{
-			_log.info ('close - Remote Called');
+			if (_isDestroying == false)
+			{
+				// avoid close loops in certain situations
+				_isDestroying = true;
+				destroy();
+			}
 		}
 		
 		public function onFCSubscribe(info:Object):void
 		{
 			_log.info ('onFCSubscribe - Remote Called');
 			// We should now be subscribed to the stream.
-			switch (info['code']) 
-			{
+			switch (info['code']) {
 				case NetConstants.NETSTREAM_PLAY_START:
-				// If FMS is telling the stream to connect, go ahead and do so now.
-				connectStream();
-				break;
+					// FMS is creating the stream. Connect now
+					connectStream();
+					break;
 			}
 		}
 	}
