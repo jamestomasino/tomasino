@@ -36,6 +36,8 @@
 		private var _isAutosize:Boolean;
 		private var _time:Number;
 		private var _bytesLoaded:Number;
+		private var _isMuted:Boolean = false;
+		private var _volume:Number = 1;
 		
 		private var _log:Logger = new Logger (this);
 		
@@ -69,6 +71,33 @@
 		public function set repeat (val:Boolean):void { _repeat = val; }
 		public function set smoothing (val:Boolean):void { if (_video) _video.smoothing = val; }
 		public function get smoothing ():Boolean { return (_video) ? _video.smoothing : true; }
+		public function get mute ():Boolean { return _isMuted }
+		public function set mute (val:Boolean):void 
+		{
+			_isMuted = val;
+			if (val)
+			{
+				if (_ns) _ns.soundTransform = new SoundTransform (0);
+			}
+			else
+			{
+				volume = _volume;
+			}
+		}
+		public function get volume ():Number { return ( _isMuted ) ? 0 : _volume }
+		public function set volume (val:Number):void 
+		{
+			_volume = val;
+			if (_ns)
+			{
+				if (val != 0)
+				{
+					_isMuted = false;
+				}
+				
+				_ns.soundTransform = new SoundTransform (_volume);
+			}
+		}
 		
 		private function connectStream ():void
 		{
@@ -78,6 +107,8 @@
 			_ns.addEventListener (CuePointEvent.CUE_POINT, onCuePoint);
 			_ns.addEventListener (MetaDataEvent.META_DATA, onMetaData);
 			_ns.addEventListener (PlayStatusEvent.COMPLETE, onPlayComplete);
+			
+			volume = _volume; 
 			
 			//attach netstream to the video object
 			_video = new Video(_maxWidth,_maxHeight);
