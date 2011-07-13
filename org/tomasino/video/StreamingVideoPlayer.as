@@ -134,6 +134,18 @@
 			_ns.addEventListener (PlayStatusEvent.COMPLETE, onPlayComplete);
 			
 			// Dispatch Clones for NetStream
+			_ns.addEventListener ( AsyncErrorEvent.ASYNC_ERROR, onClonableEvent);
+			_ns.addEventListener ( NetStatusEvent.NET_STATUS, onClonableEvent);
+			
+			_ns.addEventListener ( DRMContentEvent.DRM_CONTENT, onClonableEvent );
+			_ns.addEventListener ( CuePointEvent.CUE_POINT, onClonableEvent );
+			_ns.addEventListener ( ImageDataEvent.IMAGE_DATA, onClonableEvent );
+			_ns.addEventListener ( MetaDataEvent.META_DATA, onClonableEvent);
+			_ns.addEventListener ( PlayStatusEvent.COMPLETE, onClonableEvent);
+			_ns.addEventListener ( SeekPointEvent.SEEK_POINT, onClonableEvent);
+			_ns.addEventListener ( TextDataEvent.TEXT_DATA, onClonableEvent );
+			_ns.addEventListener ( XMPEvent.XMP, onClonableEvent );
+
 			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_SWITCH, onClonableEvent );
 			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_COMPLETE, onClonableEvent );
 			_ns.addEventListener ( NetConstants.NETSTREAM_PLAY_TRANSITION_COMPLETE, onClonableEvent );
@@ -386,6 +398,18 @@
 			_ns.removeEventListener ( MetaDataEvent.META_DATA, onMetaData );
 			_ns.removeEventListener ( PlayStatusEvent.COMPLETE, onPlayComplete );
 			
+			_ns.removeEventListener ( AsyncErrorEvent.ASYNC_ERROR, onClonableEvent);
+			_ns.removeEventListener ( NetStatusEvent.NET_STATUS, onClonableEvent);
+			
+			_ns.removeEventListener ( DRMContentEvent.DRM_CONTENT, onClonableEvent );
+			_ns.removeEventListener ( CuePointEvent.CUE_POINT, onClonableEvent );
+			_ns.removeEventListener ( ImageDataEvent.IMAGE_DATA, onClonableEvent );
+			_ns.removeEventListener ( MetaDataEvent.META_DATA, onClonableEvent);
+			_ns.removeEventListener ( PlayStatusEvent.COMPLETE, onClonableEvent);
+			_ns.removeEventListener ( SeekPointEvent.SEEK_POINT, onClonableEvent);
+			_ns.removeEventListener ( TextDataEvent.TEXT_DATA, onClonableEvent );
+			_ns.removeEventListener ( XMPEvent.XMP, onClonableEvent );
+						
 			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_SWITCH, onClonableEvent );
 			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_COMPLETE, onClonableEvent );
 			_ns.removeEventListener ( NetConstants.NETSTREAM_PLAY_TRANSITION_COMPLETE, onClonableEvent );
