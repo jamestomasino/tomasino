@@ -1,28 +1,1 @@
-package org.tomasino.encoding
-{
-	public class SequentialSubstitution
-	{
-		public static function substitute ( source:Array, caseSensitive:Boolean = false ):Array
-		{
-			var localSource:Array = source.concat();
-			var sortArray:Array = new Array();
-			/* If Array.RETURNINDEXEDARRAY wasn't broken, this class would be 3 lines long! :) */
-			
-			for (var i:int = 0; i < localSource.length; ++i)
-			{
-				sortArray.push ( {data:localSource[i], index:i} );
-			}
-			
-			sortArray.sortOn ('data');
-			
-			var indexes:Array = new Array();
-			
-			for (i = 0; i < sortArray.length; ++i)
-			{
-				indexes.push (sortArray[i].index);
-			}
-			
-			return indexes;
-		}
-	}
-}
+﻿package org.tomasino.encoding{	public class SequentialSubstitution	{		public static function substitute ( source:Array, mod10:Boolean = true ):Array		{			var lookupArr:Array = source.concat();			var sortArr:Array = source.concat();			sortArr = sortArr.sort();						var index:int = 0;			var returnArray:Array = new Array();						while (index < sortArr.length)			{				var item:Object = sortArr[index];				var itemIndex:int = lookupArr.indexOf(item);				lookupArr[itemIndex] = null; // clear found item in case of duplicates								var placeValue:int = index + 1;				if (mod10) placeValue %= 10;				returnArray[itemIndex] = placeValue; // Sequential Substitutions count from 1				++index;			}						return returnArray;		}	}}
