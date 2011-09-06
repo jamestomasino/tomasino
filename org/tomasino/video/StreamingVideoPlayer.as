@@ -161,7 +161,8 @@ package org.tomasino.video
 		
 		private function videoPlayComplete ():void
 		{
-			var e:Event = new Event(Event.COMPLETE);
+			var e:Event = new Event(NetConstants.NETSTREAM_PLAY_COMPLETE);
+
 			dispatchEvent(e);
 			
 			if (_repeat)
