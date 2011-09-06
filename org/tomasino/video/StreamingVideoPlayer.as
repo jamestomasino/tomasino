@@ -149,7 +149,7 @@ package org.tomasino.video
 			volume = _volume; 
 			
 			addChild (_video);
-			dispatchEvent(new Event(Event.INIT));
+			dispatchEvent (new Event ( NetConstants.NETSTREAM_INIT ) );
 			_ns.play (_videoURL);
 			if (!_serverLoc) this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
@@ -240,7 +240,7 @@ package org.tomasino.video
 				_seekID = -1;
 				_isSeeking = false;
 				_lastSeekTime = -1;
-				dispatchEvent( new Event (NetConstants.NETSTREAM_SEEK_NOTIFY) ); // Only dispatch this after we have a valid new time
+				dispatchEvent( new Event ( NetConstants.NETSTREAM_SEEK_NOTIFY ) ); // Only dispatch this after we have a valid new time
 			}
 		}
 		
@@ -422,14 +422,14 @@ package org.tomasino.video
 			if (_time != _ns.time)
 			{
 				_time = _ns.time;
-				var e:Event = new Event(Event.CHANGE);
+				var e:Event = new Event(NetConstants.NETSTREAM_PLAY_TIME_UPDATE);
 				dispatchEvent(e);
 			}
 			
 			if (_bytesLoaded != _ns.bytesLoaded)
 			{
 				_bytesLoaded = _ns.bytesLoaded;
-				var loadingEvent:Event = new Event("LOADING");
+				var loadingEvent:Event = new Event(NetConstants.NETSTREAM_LOADING);
 				dispatchEvent(loadingEvent);
 			}
 		}
