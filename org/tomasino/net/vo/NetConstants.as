@@ -6,6 +6,8 @@ package org.tomasino.net.vo
 		public static const NETSTREAM_PLAY_COMPLETE:String = 'NetStream.Play.Complete';
 		public static const NETSTREAM_PLAY_TRANSITION_COMPLETE:String = 'NetStream.Play.TransitionComplete';
 		
+		public static const NETSTREAM_INIT:String = 'NetStream.Init';
+		public static const NETSTREAM_LOADING:String = 'NetStream.Loading';	
 		public static const NETSTREAM_BUFFER_EMPTY:String = 'NetStream.Buffer.Empty';
 		public static const NETSTREAM_BUFFER_FULL:String = 'NetStream.Buffer.Full';
 		public static const NETSTREAM_BUFFER_FLUSH:String = 'NetStream.Buffer.Flush';
@@ -27,6 +29,8 @@ package org.tomasino.net.vo
 		public static const NETSTREAM_PLAY_INSUFFICIENT_BW:String = 'NetStream.Play.InsufficientBW';
 		public static const NETSTREAM_PLAY_FILE_STRUCTURE_INVALID:String = 'NetStream.Play.FileStructureInvalid';
 		public static const NETSTREAM_PLAY_NO_SUPPORTED_TRACK_FOUND:String = 'NetStream.Play.NoSupportedTrackFound';
+		
+		public static const NETSTREAM_PLAY_TIME_UPDATE:String = 'Netstream.Play.TimeUpdate';
 		
 		public static const NETSTREAM_PAUSE_NOTIFY:String = 'NetStream.Pause.Notify';
 		public static const NETSTREAM_UNPAUSE_NOTIFY:String = 'NetStream.Unpause.Notify';
