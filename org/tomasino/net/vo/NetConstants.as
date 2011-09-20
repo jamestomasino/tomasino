@@ -35,6 +35,8 @@ package org.tomasino.net.vo
 		public static const NETSTREAM_PAUSE_NOTIFY:String = 'NetStream.Pause.Notify';
 		public static const NETSTREAM_UNPAUSE_NOTIFY:String = 'NetStream.Unpause.Notify';
 		
+		public static const NETSTREAM_META_DATA:String = 'NetStream.MetaData';
+		
 		public static const NETSTREAM_RECORD_START:String = 'NetStream.Record.Start';
 		public static const NETSTREAM_RECORD_NO_ACCESS:String = 'NetStream.Record.NoAccess';
 		public static const NETSTREAM_RECORD_STOP:String = 'NetStream.Record.Stop';

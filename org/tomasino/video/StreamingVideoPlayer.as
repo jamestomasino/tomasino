@@ -410,6 +410,8 @@ package org.tomasino.video
 				_video.height = metaData['height'];
 				_video.width = metaData['width'];
 			}
+			
+			dispatchEvent ( new Event ( NetConstants.NETSTREAM_META_DATA ) );
 		}
 		
 		private function onCuePoint (cuePointEvent:CuePointEvent):void
