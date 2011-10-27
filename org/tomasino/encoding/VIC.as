@@ -58,6 +58,7 @@
 			// Derive MI
 			var dateString:String = String(keyDate.getFullYear());
 			var MIIndex:int = int(dateString.substr(-1, 1));
+			if (MIIndex == 0) MIIndex = 10; // in case date ends in 0
 			MIIndex = codeLen - (5 * MIIndex);
 			var MIArr:Array = codeArr.splice( MIIndex, 5);
 			var MI:String = MIArr.join('');
@@ -74,6 +75,8 @@
 			
 			var message:String = _straddlingCheckerboard.decode( straddledMessage.join('') );
 			
+			traceIntermediateKeys();
+
 			return message;
 			
 		}
@@ -100,6 +103,7 @@
 			// Insert MI
 			var dateString:String = String(keyDate.getFullYear());
 			var MIIndex:int = int(dateString.substr(-1, 1));
+			if (MIIndex == 0) MIIndex = 10; // dates ending in 0, count as 10
 			MIIndex = secondTransposition.length - (5 * (MIIndex - 1));
 			var miArr:Array = String(MI).split('');
 			var end:Array = secondTransposition.splice ( MIIndex );
@@ -115,6 +119,8 @@
 			
 			var encodedMessage:String = secondTransposition.join('');
 			
+			traceIntermediateKeys();
+
 			return encodedMessage;
 		}
 		
