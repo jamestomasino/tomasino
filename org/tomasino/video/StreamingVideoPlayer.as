@@ -1,4 +1,4 @@
-package org.tomasino.video
+﻿package org.tomasino.video
 {
 	import org.tomasino.logging.*;
 	import org.tomasino.net.SimpleNetStream;
@@ -52,7 +52,7 @@ package org.tomasino.video
 		private var _seekID:Number = -1;
 		
 		// For cuePoints
-		private var _firstCuePointVO:CuePointVO;
+		private var _firstCuePoint:CuePointVO;
 
 		private var _log:Logger = new Logger (this);
 		
@@ -269,11 +269,11 @@ package org.tomasino.video
 			{
 				while (prevCuePoint && prevCuePoint.time <= time && prevCuePoint.next && prevCuePoint.next.time <= time) 
 				{
-					prevCuePoint = prev.next;
+					prevCuePoint = prevCuePoint.next;
 				}
 			}
 
-			var cuePoint:CuePointVO = new CuePointVO ( time, name, parameters, prev );
+			var cuePoint:CuePointVO = new CuePointVO ( time, name, '', prevCuePoint );
 
 			if ( prevCuePoint == null )
 			{
@@ -285,12 +285,9 @@ package org.tomasino.video
 
 				_firstCuePoint = cuePoint;
 			}
-
-			return cuePoint;
-
 		}
 
-		public function removeASCuePoint(timeNameOrCuePoint:*):Object 
+		public function removeASCuePoint(timeNameOrCuePoint:*):void 
 		{
 			var cuePoint:CuePointVO = _firstCuePoint;
 		
@@ -314,25 +311,25 @@ package org.tomasino.video
 
 					cuePoint.next = cuePoint.prev = null;
 
-					return cuePoint;
+					return;
 				}
 
 				cuePoint = cuePoint.next;
 			}
 
-			return null;
+			return;
 		}
 
 		public function getCuePointTime(name:String):Number 
 		{
-			if (this.metaData != null && this.metaData.cuePoints is Array) 
+			if (_ns.metaData != null && _ns.metaData.cuePoints is Array) 
 			{
-				var i:int = this.metaData.cuePoints.length;
+				var i:int = _ns.metaData.cuePoints.length;
 				while (--i > -1) 
 				{
-					if (name == this.metaData.cuePoints[i].name) 
+					if (name == _ns.metaData.cuePoints[i].name) 
 					{
-						return Number(this.metaData.cuePoints[i].time);
+						return Number(_ns.metaData.cuePoints[i].time);
 					}
 				}
 			}
@@ -540,7 +537,7 @@ package org.tomasino.video
 
 							if ( _time < cuePoint.time && cuePoint.time <= _ns.time )
 							{
-								dispatchEvent( new CuePointEvent ( NetConstants.CUE_POINT, cuePoint ) );
+								dispatchEvent( new CuePointEvent ( CuePointEvent.CUE_POINT, cuePoint ) );
 							}
 
 							cuePoint = nextCuePoint;
@@ -663,3 +660,4 @@ package org.tomasino.video
 		}
 	}
 }
+

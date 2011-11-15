@@ -19,6 +19,7 @@ package org.tomasino.net
 	{
 		private var _isMetaDataFired:Boolean = false;
 		private var _isPauseQueued:Boolean = false;
+		private var _metaData:Object;
 
 		public function SimpleNetStream(connection:NetConnection, peerID:String="connectToFMS")
 		{
@@ -48,6 +49,8 @@ package org.tomasino.net
 		// Handle dispatching metadata events and handle bug with pause() called before metadata
 		public function onMetaData ( metaData:Object ):void
 		{
+			_metaData = metaData;
+
 			_isMetaDataFired = true;
 
 			if (_isPauseQueued)
@@ -61,6 +64,11 @@ package org.tomasino.net
 			dispatchEvent( metaDataEvent );
 		}
 		
+		public function get metaData ():Object
+		{
+			return _metaData;
+		}
+
 		override public function pause ():void
 		{
 			if (_isMetaDataFired) super.pause();
@@ -127,7 +135,6 @@ package org.tomasino.net
 		}
 		
 		/* AIR Only */
-		
 		public function onDRMContentData ( drmData:Object ):void
 		{
 			// drmData is a DRMContentData object.
@@ -138,7 +145,6 @@ package org.tomasino.net
 		}
 		
 		/* Undocumented public callbacks from FMS */
-		
 		public function onBWCheck(...args):Number 
 		{
 			return 0;
