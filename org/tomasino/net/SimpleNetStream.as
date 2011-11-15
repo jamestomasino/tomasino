@@ -17,6 +17,9 @@ package org.tomasino.net
 	
 	public class SimpleNetStream extends NetStream
 	{
+		private var _isMetaDataFired:Boolean = false;
+		private var _isPauseQueued:Boolean = false;
+
 		public function SimpleNetStream(connection:NetConnection, peerID:String="connectToFMS")
 		{
 			super(connection, peerID);
@@ -41,13 +44,50 @@ package org.tomasino.net
 			var imageDataEvent:ImageDataEvent = new ImageDataEvent ( ImageDataEvent.IMAGE_DATA, imageByteArray );
 			dispatchEvent( imageDataEvent );
 		}
-				
+		
+		// Handle dispatching metadata events and handle bug with pause() called before metadata
 		public function onMetaData ( metaData:Object ):void
 		{
+			_isMetaDataFired = true;
+
+			if (_isPauseQueued)
+			{
+				_isPauseQueued = false;
+				seek (0);
+				super.pause();
+			}
+			
 			var metaDataEvent:MetaDataEvent = new MetaDataEvent ( MetaDataEvent.META_DATA, metaData );
 			dispatchEvent( metaDataEvent );
 		}
 		
+		override public function pause ():void
+		{
+			if (_isMetaDataFired) super.pause();
+			else
+			{
+				_isPauseQueued = true;
+			}
+		}
+
+		override public function togglePause ():void
+		{
+			if (_isMetaDataFired) super.togglePause();
+			else
+			{
+				_isPauseQueued = !_isPauseQueued;
+			}
+		}
+
+		override public function resume ():void
+		{
+			if (_isMetaDataFired) super.resume();
+			else
+			{
+				_isPauseQueued = false;
+			}
+		}
+
 		public function onPlayStatus ( playStatus:Object ):void
 		{
 			var code:String = playStatus['info']['code'] as String;
@@ -111,5 +151,6 @@ package org.tomasino.net
 				var bandwidth:Number = args[0];
 			}
 		}
+
 	}
 }
