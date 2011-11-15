@@ -144,8 +144,11 @@
 			_ns.addEventListener ( XMPEvent.XMP, onClonableEvent );
 			
 			
-			//attach netstream to the video object
-			_video = new Video(_maxWidth,_maxHeight);
+			//attach netstream to the video Object
+			
+			_video = new Video(320,160); // Must use these values if we ever want to use scrollRect.
+			_video.vidth = _maxWidth;
+			_video.height = _maxHeight;
 			_video.smoothing = true;
 			_video.attachNetStream (_ns);
 			
@@ -389,8 +392,12 @@
 					dispatchEvent ( new Event ( NetConstants.NETSTREAM_PLAY_STREAM_NOT_FOUND ) );
 					break;
 				case NetConstants.NETSTREAM_PLAY_STOP:
-					videoPlayComplete ();
-					dispatchEvent ( new Event ( NetConstants.NETSTREAM_PLAY_STOP ) );
+					if (!_isPaused)
+					{
+						// Don't dispatch a stop event if we're paused and seeked. Fixes flash bug.
+						videoPlayComplete ();
+						dispatchEvent ( new Event ( NetConstants.NETSTREAM_PLAY_STOP ) );
+					}
 					break;
 				case NetConstants.NETSTREAM_SEEK_FAILED:
 					_log.warn ('onNetStatus - Seek Failed: ' + _ns.time);
