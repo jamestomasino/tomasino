@@ -1,4 +1,4 @@
-﻿package org.tomasino.logging
+package org.tomasino.logging
 {
 	import flash.events.StatusEvent;
 	import flash.net.LocalConnection;
