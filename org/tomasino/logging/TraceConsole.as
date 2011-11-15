@@ -1,4 +1,4 @@
-﻿package org.tomasino.logging
+package org.tomasino.logging
 {
 	public class TraceConsole implements IConsole
 	{
