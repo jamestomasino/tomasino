@@ -273,7 +273,7 @@
 				}
 			}
 
-			var cuePoint:CuePointVO = new CuePointVO ( time, name, '', prevCuePoint );
+			var cuePoint:CuePointVO = new CuePointVO ( time, label, 'actionscript', prevCuePoint );
 
 			if ( prevCuePoint == null )
 			{
