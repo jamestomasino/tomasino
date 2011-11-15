@@ -1,4 +1,4 @@
-﻿package org.tomasino.logging
+package org.tomasino.logging
 {
 	import flash.errors.IllegalOperationError;
 	import flash.utils.getQualifiedClassName;
