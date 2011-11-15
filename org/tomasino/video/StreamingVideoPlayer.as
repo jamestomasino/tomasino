@@ -42,6 +42,8 @@ package org.tomasino.video
 		private var _bytesLoaded:Number;
 		private var _isMuted:Boolean = false;
 		private var _isDestroying:Boolean = false;
+
+		private var _playTimeUpdateListener:Boolean = false;
 		
 		// For Seeking
 		private var _isSeeking:Boolean = false;
@@ -49,7 +51,9 @@ package org.tomasino.video
 		private var _lastSeekTime:Number;
 		private var _seekID:Number = -1;
 		
-		
+		// For cuePoints
+		private var _firstCuePointVO:CuePointVO;
+
 		private var _log:Logger = new Logger (this);
 		
 		public function StreamingVideoPlayer (serverLoc:String, flvLocation:String, maxWidth:Number, maxHeight:Number, autosize:Boolean = false, volume:Number = 1):void
@@ -243,11 +247,111 @@ package org.tomasino.video
 				dispatchEvent( new Event ( NetConstants.NETSTREAM_SEEK_NOTIFY ) ); // Only dispatch this after we have a valid new time
 			}
 		}
+
+		override public function addEventListener (type:String, listener:Function, useCapture:Boolean=false, priority:int=0, useWeakReference:Boolean=false ):void
+		{
+			if (type == NetConstants.NETSTREAM_PLAY_TIME_UPDATE) 
+			{
+				_playTimeUpdateListener = true;
+			}
+			super.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
 		
 		public function addASCuePoint ( time:Number, label:String ):void
 		{
-			// Currently no way to do this that I know of
+			var prevCuePoint:CuePointVO = _firstCuePoint;
+
+			if (prevCuePoint != null && prevCuePoint.time > time) 
+			{
+				prevCuePoint = null;
+			} 
+			else 
+			{
+				while (prevCuePoint && prevCuePoint.time <= time && prevCuePoint.next && prevCuePoint.next.time <= time) 
+				{
+					prevCuePoint = prev.next;
+				}
+			}
+
+			var cuePoint:CuePointVO = new CuePointVO ( time, name, parameters, prev );
+
+			if ( prevCuePoint == null )
+			{
+				if ( _firstCuePoint != null ) 
+				{
+					_firstCuePoint.prev = cuePoint;
+					cuePoint.next = _firstCuePoint;
+				}
+
+				_firstCuePoint = cuePoint;
+			}
+
+			return cuePoint;
+
 		}
+
+		public function removeASCuePoint(timeNameOrCuePoint:*):Object 
+		{
+			var cuePoint:CuePointVO = _firstCuePoint;
+		
+			while (cuePoint) 
+			{
+				if (cuePoint == timeNameOrCuePoint || cuePoint.time == timeNameOrCuePoint || cuePoint.name == timeNameOrCuePoint) 
+				{
+					if (cuePoint.next) 
+					{
+						cuePoint.next.prev = cuePoint.prev;
+					}
+
+					if (cuePoint.prev) 
+					{
+						cuePoint.prev.next = cuePoint.next;
+					} 
+					else if (cuePoint == _firstCuePoint) 
+					{
+						_firstCuePoint = cuePoint.next;
+					}
+
+					cuePoint.next = cuePoint.prev = null;
+
+					return cuePoint;
+				}
+
+				cuePoint = cuePoint.next;
+			}
+
+			return null;
+		}
+
+		public function getCuePointTime(name:String):Number 
+		{
+			if (this.metaData != null && this.metaData.cuePoints is Array) 
+			{
+				var i:int = this.metaData.cuePoints.length;
+				while (--i > -1) 
+				{
+					if (name == this.metaData.cuePoints[i].name) 
+					{
+						return Number(this.metaData.cuePoints[i].time);
+					}
+				}
+			}
+			
+			var cuePoint:CuePointVO = _firstCuePoint;
+			
+			while (cuePoint) 
+			{
+				if (cuePoint.name == name) 
+				{
+					return cuePoint.time;
+				}
+
+				cuePoint = cuePoint.next;
+			}
+
+			return NaN;
+		}
+
 		
 		private function onNetStatus (event:Object):void
 		{
@@ -421,11 +525,36 @@ package org.tomasino.video
 		
 		private function onEnterFrame(e:Event):void
 		{
-			if (_time != _ns.time)
+			if ( _firstCuePoint || _playTimeUpdateListener )
 			{
-				_time = _ns.time;
-				var e:Event = new Event(NetConstants.NETSTREAM_PLAY_TIME_UPDATE);
-				dispatchEvent(e);
+				if (_time != _ns.time)
+				{
+					if (!_isSeeking)
+					{
+						var nextCuePoint:CuePointVO;
+						var cuePoint:CuePointVO = _firstCuePoint;
+
+						while (cuePoint) 
+						{
+							nextCuePoint = cuePoint.next;
+
+							if ( _time < cuePoint.time && cuePoint.time <= _ns.time )
+							{
+								dispatchEvent( new CuePointEvent ( NetConstants.CUE_POINT, cuePoint ) );
+							}
+
+							cuePoint = nextCuePoint;
+						}
+					}
+				
+					_time = _ns.time;
+					
+					if ( _playTimeUpdateListener )
+					{
+						var e:Event = new Event(NetConstants.NETSTREAM_PLAY_TIME_UPDATE);
+						dispatchEvent(e);
+					}
+				}
 			}
 			
 			if (_bytesLoaded != _ns.bytesLoaded)
