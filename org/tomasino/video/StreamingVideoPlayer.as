@@ -1,4 +1,4 @@
-﻿package org.tomasino.video
+package org.tomasino.video
 {
 	import org.tomasino.logging.*;
 	import org.tomasino.net.SimpleNetStream;
