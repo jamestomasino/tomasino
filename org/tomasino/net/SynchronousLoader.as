@@ -1,4 +1,4 @@
-﻿package org.tomasino.net
+package org.tomasino.net
 {
 	import org.tomasino.logging.Logger;
 	import flash.external.ExternalInterface;
