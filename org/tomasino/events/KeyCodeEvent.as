@@ -1,4 +1,4 @@
-﻿package org.tomasino.events
+package org.tomasino.events
 {
 	import flash.events.Event;
 	
