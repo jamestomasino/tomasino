@@ -323,6 +323,37 @@ package org.tomasino.video
 			return;
 		}
 
+		public function getCuePointTimes ():Array
+		{
+			var returnArray:Array = new Array();
+
+			var cp:CuePointVO = _firstCuePoint;
+			var loop:Boolean = (cp) ? true : false;
+			while (loop)
+			{
+				var time:Number = cp.time;
+				returnArray.push (time);
+				if (cp.next)
+				{
+					cp = cp.next;
+				}
+				else
+				{
+					loop = false;
+				}
+			}
+			
+			var i:int = _ns.metaData.cuePoints.length;
+			while (--i > -1) 
+			{
+				returnArray.push ( Number(_ns.metaData.cuePoints[i].time) );
+			}
+
+			returnArray.sort( Array.NUMERIC );
+			
+			return returnArray;
+		}
+
 		public function getCuePointTime(name:String):Number 
 		{
 			if (_ns.metaData != null && _ns.metaData.cuePoints is Array) 
