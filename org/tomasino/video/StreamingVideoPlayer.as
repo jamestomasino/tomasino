@@ -147,7 +147,7 @@ package org.tomasino.video
 			//attach netstream to the video Object
 			
 			_video = new Video(320,160); // Must use these values if we ever want to use scrollRect.
-			_video.vidth = _maxWidth;
+			_video.width = _maxWidth;
 			_video.height = _maxHeight;
 			_video.smoothing = true;
 			_video.attachNetStream (_ns);
