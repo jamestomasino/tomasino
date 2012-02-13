@@ -34,7 +34,8 @@ package org.tomasino.video
 		private var _netConnection:NetConnection = new NetConnection();
 		private var _ns:SimpleNetStream;
 		private var _serverLoc:String;
-		
+		private var _isStreamingLocation:Boolean = false;
+
 		private var _repeat:Boolean;
 		private var _isPaused:Boolean;
 		private var _isAutosize:Boolean;
@@ -71,7 +72,8 @@ package org.tomasino.video
 			_isAutosize = autosize;
 			_serverLoc = serverLoc;
 			_volume = volume;
-			
+			if (serverLoc) _isStreamingLocation = true;
+
 			//add eventListeners to NetConnection and connect
 			_netConnection.addEventListener (NetStatusEvent.NET_STATUS, onNetStatus);
 			_netConnection.addEventListener (SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
@@ -180,6 +182,7 @@ package org.tomasino.video
 			{
 				_isPaused = true;
 				_ns.pause();
+				if (!_isStreamingLocation) dispatchEvent (new Event (NetConstants.NETSTREAM_PAUSE_NOTIFY) ) ;
 			}
 		}
 		
@@ -189,6 +192,7 @@ package org.tomasino.video
 			{
 				_isPaused = false;
 				_ns.togglePause ();
+				if (!_isStreamingLocation) dispatchEvent (new Event (NetConstants.NETSTREAM_UNPAUSE_NOTIFY) ) ;
 				return true;
 			} 
 			else 
@@ -202,6 +206,7 @@ package org.tomasino.video
 			{
 				_isPaused = true;
 				_ns.togglePause ();
+				if (!_isStreamingLocation) dispatchEvent (new Event (NetConstants.NETSTREAM_PAUSE_NOTIFY) ) ;
 				return true;
 			} 
 			else 
@@ -212,7 +217,18 @@ package org.tomasino.video
 		public function togglePause (event:MouseEvent = null):Boolean
 		{
 			_ns.togglePause();
-			_isPaused != _isPaused;
+			_isPaused = !_isPaused;
+			if (!_isStreamingLocation) 
+			{
+				if (_isPaused) 
+				{
+					dispatchEvent (new Event (NetConstants.NETSTREAM_PAUSE_NOTIFY) ) ;
+				}
+				else
+				{
+					dispatchEvent (new Event (NetConstants.NETSTREAM_UNPAUSE_NOTIFY) ) ;
+				}
+			}
 			return true;
 		}
 		
