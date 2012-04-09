@@ -36,49 +36,43 @@
         <span class="blc"></span><span class="trc"></span>
         </div>
         <article class="markdown-body">
-          <h3>Welcome to GitHub Pages.</h3>
+h2. tomasino - An ActionScript 3 Library that contains a number of classes and utilities for working with ActionScript 3.
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+h3. Getting Started
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+* "Labs Website":http://labs.tomasino.org
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+h3. Lab Samples
 
-<h3>Designer Templates</h3>
+* "org.tomasino.net.SimpleNetStream":http://labs.tomasino.org/2011/07/08/netstream-sucks/ - NetStream wrapper with correct event firing and no callbacks
+* "org.tomasino.utils.Debug":http://labs.tomasino.org/2011/04/27/trace-replacer/ - Simple debugging with line numbers
+* "org.tomasino.io.KeyCodeReader":http://labs.tomasino.org/2011/03/01/as3-keycode-reader/ - Simple keyboard keycode input system
+* "org.tomasino.display.DepthOfField":http://labs.tomasino.org/2011/02/23/depth-of-field/ - Depth of field changer. High CPU use
+* "org.tomasino.utils.ObscureText":http://labs.tomasino.org/2011/02/23/obscure-text/ - Replace text with visually similar unicode garbage for obfuscation to machines and easy human readability
+* "org.tomasino.tracking.omniture.*":http://labs.tomasino.org/2011/02/01/flash-omniture-tracking/ - Omniture Tracking
+* "org.tomasino.tracking.google.*":http://labs.tomasino.org/2011/01/31/flash-googleanalytics-tracking/ - Google Analytics Tracking
+* "org.tomasino.display.DuplicateLoader":http://labs.tomasino.org/2010/04/20/as3-duplicate-loaded-swf/ - Duplicate Loaded SWFs
+* "org.tomasino.net.SynchronousLoader":http://labs.tomasino.org/2010/04/01/as3-synchronous-url-xml-loading/ - URLLoader that works synchronously
+* "org.tomasino.logging.*":http://labs.tomasino.org/2009/12/04/flash-as3-debug-logging/ - Full featured Debugging
+* "org.tomasino.accessibility.TabManager":http://labs.tomasino.org/2009/12/03/flash-as3-focus-management/ - Simple Tab Manager with groups
+* "org.tomasino.fonts.FontManager":http://labs.tomasino.org/2009/07/16/flash-as3-runtime-font-manager/ - Runtime Font Loading
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
 
-<h3>Rather Drive Stick?</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+h3. Dependencies
 
-<h3>Authors and Contributors</h3>
+* "as3corelib":https://github.com/mikechambers/as3corelib - Required for: JSONLoader, LatLongDist
+* "GreenSock Tween Suite":http://www.greensock.com/tweenlite/ - Required for: DepthOfField, ParallaxManager, ScrollWheelWindow, SparkleBox
+* Flex - WebServiceProxy
+* Omniture Actionsource SWC - org.tomasino.tracking.omniture.*
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+h2. License
 
-<h3>Support or Contact</h3>
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact support@github.com and we’ll help you sort it out.</p>
-        </article>
-      </div>
-    </div>
-    <footer>
-      <div class="owner">
-      <p><a href="https://github.com/jamestomasino" class="avatar"><img src="https://secure.gravatar.com/avatar/09c90fa1ab5a081d722e131db3efc3a0?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/jamestomasino">jamestomasino</a> maintains <a href="https://github.com/jamestomasino/tomasino">Tomasino</a></p>
-      </div>
-      <div class="creds">
-        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
-      </div>
-    </footer>
-  </div>
-  <div class="current-section">
-    <a href="#top">Scroll to top</a>
-    <a href="https://github.com/jamestomasino/tomasino/tarball/master" class="tar">tar</a><a href="https://github.com/jamestomasino/tomasino/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
-    <p class="name"></p>
-  </div>
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
   
 </body>
