@@ -5,7 +5,7 @@ package org.tomasino.tracking.unica
 
 	public class UnicaTracker
 	{
-		public static function event ( arg:String = null ):void
+		public static function eventTag ( arg:String = null ):void
 		{
 			if (Availability.available)
 			{
