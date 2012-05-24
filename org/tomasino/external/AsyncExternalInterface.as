@@ -37,7 +37,7 @@ package org.tomasino.external
 				try
 				{
 					// Test if CallStack class exists
-					ExternalInterface.call( 'CallStack.getInst();');
+					ExternalInterface.call( 'CallStack');
 				}
 				catch (e:Error)
 				{
@@ -56,16 +56,21 @@ package org.tomasino.external
 
 		public static function call ( functionName:String, ...rest ):void
 		{
+
 			if (_isExternalInterfaceAvailable)
 			{
-                if (_isCallStackAvailable)
+    			var params:Array = rest;
+
+				if (_isCallStackAvailable)
 				{
-					ExternalInterface.call ( 'CallStack.getInst().addCall', functionName, rest);
+					_log.info ( 'CallStack.addCall (' + functionName + ')');
+					ExternalInterface.call ( 'CallStack.getInst().addCall', functionName, params);
 				}
 				else
 				{
-					var params:Array = rest.unshift(functionName);
-					ExternalInterface.call.apply( null, params );
+					var nameArray:Array = [ functionName ];
+					var sendParams:Array = nameArray.concat(params);
+					ExternalInterface.call.apply( null, sendParams );
 				}
 			}
 			else
